@@ -52,14 +52,9 @@ CLI.prototype.createWallet = async function createWallet() {
     n: this.config.uint('n'),
     witness: this.config.bool('witness'),
     passphrase: this.config.str('passphrase'),
-    watchOnly: false,
-    accountKey: null
+    watchOnly: this.config.has('key') ? true : this.config.bool('watch'),
+    accountKey: this.config.str('key')
   };
-
-  if (this.config.has('watch')) {
-    options.watchOnly = true;
-    options.accountKey = this.config.str('watch');
-  }
 
   const wallet = await this.client.createWallet(options);
 
@@ -126,7 +121,7 @@ CLI.prototype.createAccount = async function createAccount() {
     m: this.config.uint('m'),
     n: this.config.uint('n'),
     witness: this.config.bool('witness'),
-    accountKey: this.config.str('watch')
+    accountKey: this.config.str('key')
   };
 
   const account = await this.wallet.createAccount(name, options);
@@ -165,7 +160,7 @@ CLI.prototype.getWallet = async function getWallet() {
 CLI.prototype.getTX = async function getTX() {
   const hash = this.config.str(0);
 
-  if (util.isBase58(hash)) {
+  if (util.isBase58(hash) || util.isBech32(hash)) {
     const txs = await this.client.getTXByAddress(hash);
     this.log(txs);
     return;
@@ -201,7 +196,7 @@ CLI.prototype.getCoin = async function getCoin() {
   const hash = this.config.str(0);
   const index = this.config.uint(1);
 
-  if (util.isBase58(hash)) {
+  if (util.isBase58(hash) || util.isBech32(hash)) {
     const coins = await this.client.getCoinsByAddress(hash);
     this.log(coins);
     return;
