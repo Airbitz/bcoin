@@ -46,6 +46,7 @@
   },
   "main": "./lib/bcoin.js",
   "react-native": "./rn/bcoin.js",
+  "browser": "./rn/bcoin.js",
   "bin": {
     "bcoin": "./bin/bcoin",
     "bcoin-cli": "./bin/cli",
